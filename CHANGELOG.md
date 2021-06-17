@@ -1,10 +1,29 @@
 ## [`master`](https://github.com/elastic/eui/tree/master)
 
+- Reverted `z-index: 1` on `EuiPageBody` ([#4892](https://github.com/elastic/eui/pull/4892))
+## [`34.4.0`](https://github.com/elastic/eui/tree/v34.4.0)
+
+- Added draggable highlight area to `EuiDualRange` ([#4776](https://github.com/elastic/eui/pull/4776))
+
+**Bug fixes**
+
+- Fixed auto scrolling on update in `EuiComboBox` ([#4879](https://github.com/elastic/eui/pull/4879))
+
+## [`34.3.0`](https://github.com/elastic/eui/tree/v34.3.0)
+
 - Added `testenv` mock for `EuiFlyout` ([#4858](https://github.com/elastic/eui/pull/4858))
+- Added `mobile` glyph to `EuiIcon` ([#4827](https://github.com/elastic/eui/pull/4827))
+- Reduced display of arrow icon in `EuiSideNav` to only if the item is **not** linked but has children ([#4827](https://github.com/elastic/eui/pull/4827))
+- Increased size and prominence of mobile toggle in `EuiSideNav` ([#4827](https://github.com/elastic/eui/pull/4827))
+- Added `heading`, `headingProps`, and `mobileBreakpoints` props for better accessibility to `EuiSideNav` ([#4827](https://github.com/elastic/eui/pull/4827))
 
 **Bug fixes**
 
 - Fixed mobile menus styles on `EuiDataGrid` ([#4844](https://github.com/elastic/eui/pull/4844))
+
+**Theme: Amsterdam**
+
+- Decreased spacing and root element size of `EuiSideNav` ([#4816](https://github.com/elastic/eui/pull/4816))
 
 ## [`34.2.0`](https://github.com/elastic/eui/tree/v34.2.0)
 
@@ -21,7 +40,6 @@
 **Bug fixes**
 
 - Fixed `onBlur` and `data-test-subj` prop propagation in `EuiColorPicker` ([#4822](https://github.com/elastic/eui/pull/4822))
-- Fixed mobile menus styles on `EuiDataGrid` ([#4844](https://github.com/elastic/eui/pull/4844))
 
 ## [`34.1.0`](https://github.com/elastic/eui/tree/v34.1.0)
 

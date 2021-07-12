@@ -1,20 +1,9 @@
 /*
- * Licensed to Elasticsearch B.V. under one or more contributor
- * license agreements. See the NOTICE file distributed with
- * this work for additional information regarding copyright
- * ownership. Elasticsearch B.V. licenses this file to you under
- * the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
  */
 
 import React, { Component } from 'react';
@@ -41,6 +30,7 @@ import { EuiRangeThumb } from './range_thumb';
 import { EuiRangeTick } from './range_ticks';
 import { EuiRangeTrack } from './range_track';
 import { EuiRangeWrapper } from './range_wrapper';
+import { calculateThumbPosition } from './utils';
 
 type ValueMember = number | string;
 
@@ -393,21 +383,18 @@ export class EuiDualRange extends Component<EuiDualRangeProps> {
   };
 
   calculateThumbPositionStyle = (value: number, width?: number) => {
-    // Calculate the left position based on value
-    const decimal =
-      (value - this.props.min) / (this.props.max - this.props.min);
-    // Must be between 0-100%
-    let valuePosition = decimal <= 1 ? decimal : 1;
-    valuePosition = valuePosition >= 0 ? valuePosition : 0;
-
-    const EUI_THUMB_SIZE = 16;
     const trackWidth =
       this.props.showInput === 'inputWithPopover' && !!width
         ? width
         : this.rangeSliderRef!.clientWidth;
-    const thumbToTrackRatio = EUI_THUMB_SIZE / trackWidth;
-    const trackPositionScale = (1 - thumbToTrackRatio) * 100;
-    return { left: `${valuePosition * trackPositionScale}%` };
+
+    const position = calculateThumbPosition(
+      value,
+      this.props.min,
+      this.props.max,
+      trackWidth
+    );
+    return { left: `${position}%` };
   };
 
   toggleHasFocus = (shouldFocused = !this.state.hasFocus) => {
@@ -655,18 +642,6 @@ export class EuiDualRange extends Component<EuiDualRangeProps> {
           onChange={this.handleSliderChange}
           value={value}
           aria-hidden={showInput === true}>
-          {showRange && this.isValid && (
-            <EuiRangeHighlight
-              compressed={compressed}
-              hasFocus={this.state.hasFocus}
-              showTicks={showTicks}
-              min={Number(min)}
-              max={Number(max)}
-              lowerValue={Number(this.lowerValue)}
-              upperValue={Number(this.upperValue)}
-            />
-          )}
-
           <EuiRangeSlider
             className="euiDualRange__slider"
             ref={this.handleRangeSliderRefUpdate}
@@ -688,6 +663,18 @@ export class EuiDualRange extends Component<EuiDualRangeProps> {
             onBlur={onBlur}
             {...rest}
           />
+
+          {showRange && this.isValid && (
+            <EuiRangeHighlight
+              compressed={compressed}
+              hasFocus={this.state.hasFocus}
+              showTicks={showTicks}
+              min={Number(min)}
+              max={Number(max)}
+              lowerValue={Number(this.lowerValue)}
+              upperValue={Number(this.upperValue)}
+            />
+          )}
 
           {this.state.rangeSliderRefAvailable && (
             <React.Fragment>

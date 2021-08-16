@@ -83,6 +83,10 @@ type EuiFormRowCommonProps = CommonProps & {
    *  Adds a single node/string or an array of nodes/strings below the input
    */
   helpText?: ReactNode | ReactNode[];
+  /**
+   *  Passed along to the label element; and to the child field element when `disabled` doesn't already exist on the child field element.
+   */
+  isDisabled?: boolean;
 };
 
 type LabelProps = {
@@ -97,7 +101,7 @@ type LegendProps = {
    */
   labelType?: 'legend';
 } & EuiFormRowCommonProps &
-  HTMLAttributes<HTMLFieldSetElement>;
+  Omit<HTMLAttributes<HTMLFieldSetElement>, 'disabled'>;
 
 export type EuiFormRowProps = ExclusiveUnion<LabelProps, LegendProps>;
 
@@ -162,6 +166,7 @@ export class EuiFormRow extends Component<EuiFormRowProps, EuiFormRowState> {
       display,
       hasChildLabel,
       id: propsId,
+      isDisabled,
       ...rest
     } = this.props;
 
@@ -223,7 +228,7 @@ export class EuiFormRow extends Component<EuiFormRowProps, EuiFormRowState> {
       } else {
         labelProps = {
           htmlFor: hasChildLabel ? id : undefined,
-          isFocused: this.state.isFocused,
+          ...(!isDisabled && { isFocused: this.state.isFocused }), // If the row is disabled, don't pass the isFocused state.
           type: labelType,
         };
       }
@@ -232,6 +237,7 @@ export class EuiFormRow extends Component<EuiFormRowProps, EuiFormRowState> {
           <EuiFormLabel
             className="euiFormRow__label"
             isInvalid={isInvalid}
+            isDisabled={isDisabled}
             aria-invalid={isInvalid}
             {...labelProps}>
             {label}
@@ -262,8 +268,11 @@ export class EuiFormRow extends Component<EuiFormRowProps, EuiFormRowState> {
       optionalProps['aria-describedby'] = describingIds.join(' ');
     }
 
-    const field = cloneElement(Children.only(children), {
+    const child = Children.only(children);
+    const field = cloneElement(child, {
       id,
+      // Allow the child's disabled or isDisabled prop to supercede the `isDisabled`
+      disabled: child.props.disabled ?? child.props.isDisabled ?? isDisabled,
       onFocus: this.onFocus,
       onBlur: this.onBlur,
       ...optionalProps,

@@ -16,7 +16,7 @@ import React, {
 } from 'react';
 import classNames from 'classnames';
 import {
-  htmlIdGenerator,
+  useGeneratedHtmlId,
   isWithinMinBreakpoint,
   throttle,
 } from '../../services';
@@ -73,7 +73,10 @@ export const EuiCollapsibleNav: FunctionComponent<EuiCollapsibleNavProps> = ({
   paddingSize = 'none',
   ...rest
 }) => {
-  const [flyoutID] = useState(id || htmlIdGenerator()('euiCollapsibleNav'));
+  const flyoutID = useGeneratedHtmlId({
+    conditionalId: id,
+    suffix: 'euiCollapsibleNav',
+  });
 
   /**
    * Setting the initial state of pushed based on the `type` prop
@@ -152,7 +155,8 @@ export const EuiCollapsibleNav: FunctionComponent<EuiCollapsibleNavProps> = ({
       // Props dependent on internal docked status
       type={navIsDocked ? 'push' : 'overlay'}
       hideCloseButton={navIsDocked}
-      pushMinBreakpoint={dockedBreakpoint}>
+      pushMinBreakpoint={dockedBreakpoint}
+    >
       {children}
     </EuiFlyout>
   );
